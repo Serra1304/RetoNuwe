@@ -1,6 +1,7 @@
 package com.hackathon.hackathon.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,19 +47,59 @@ public class HackathonService {
         return new ArrayList<>(items);
     }
 
+    /**
+     * Recupera elementos de un tipo específico.
+     * @param type El tipo de elementos a recuperar.
+     * @return Una lista de elementos del tipo especificado.
+     */
     public List<Item> getItemsByType(String type) {
-    	return null;
+        List<Item> itemsByType = new ArrayList<>();
+
+        for(Item item : items) {
+            if(item.getType().equals(type)) {
+                itemsByType.add(item);
+            }
+        }
+        return itemsByType;
     }
 
     public void addItem(Item item) {
         items.add(item);
     }
 
+    /**
+     * Permite a un ofertante hacer una oferta por un elemento específico.
+     * @param itemName El nombre del elemento.
+     * @param amount El monto de la oferta.
+     * @param bidder El ofertante que realiza la oferta.
+     * @return Una cadena que indica el resultado del intento de oferta.
+     */
 	public String makeOffer(String itemName, double amount, Bidder bidder) {
-    	return null;
+
+        for (Item item : items) {
+            if(item.getName().equals(itemName)) {
+                if(item.getHighestOffer() < amount) {
+                    item.setName(bidder.getName());
+                    item.setHighestOffer(amount);
+
+                    return OFFER_ACCEPTED;
+                }
+                return OFFER_REJECTED;
+            }
+        }
+        return ITEM_NOT_FOUND;
 	}
 
+    /**
+     * Recupera un mapa que contiene los nombres de los elementos y los nombres de sus ofertantes ganadores.
+     * @return Un mapa que contiene los nombres de los elementos como claves y los nombres de sus ofertantes ganadores como valores.
+     */
 	public Map<String, String> getWinningBidder() {
-    	return null;
+        Map<String, String> bidItems = new HashMap<>();
+
+        for(Item item : items) {
+            bidItems.put(item.getName(), item.getCurrentBidder().getName());
+        }
+        return bidItems;
     }
 }
